@@ -1,0 +1,19 @@
+﻿# Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+*.sdf
+*.opensdf
+ipch/
+
+# Build
+Debug/
+Release/
+x64/
+x86/
+*.exe
+*.pdb
+*.obj
+
+# Packages
+packages/
