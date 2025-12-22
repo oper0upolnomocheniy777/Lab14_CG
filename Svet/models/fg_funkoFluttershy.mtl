@@ -1,0 +1,9 @@
+newmtl fg_funkoFluttershy
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+map_Kd fg_funkoFluttershy_albedo.jpg
+bump fg_funkoFluttershy_nrm.jpg -bm 1

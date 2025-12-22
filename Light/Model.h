@@ -4,7 +4,8 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
-#include "Shader.h"
+
+class Shader;  // Forward declaration
 
 struct Vertex {
     glm::vec3 Position;
@@ -40,15 +41,13 @@ public:
 private:
     std::vector<Mesh> meshes;
     std::string directory;
+    std::vector<Texture> loadedTextures;
 
     void loadOBJ(const std::string& path);
     void loadTexturesForModel(const std::string& modelName);
     unsigned int loadTexture(const std::string& path);
     unsigned int createColorTexture(float r, float g, float b);
     void createFallbackModel(const std::string& modelName);
-
-    // Хранилище загруженных текстур
-    std::vector<Texture> loadedTextures;
 };
 
 #endif

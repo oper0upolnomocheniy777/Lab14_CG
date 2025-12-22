@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Svet.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Light\Camera.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Light\main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Light\Shader.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Light\Model.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Light\Camera.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Light\Model.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Light\Shader.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Light\stb_image.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Light\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="models\fb_abWishFairy.mtl" />
+    <None Include="models\fg_funkoFluttershy.mtl" />
+    <None Include="models\model.mtl" />
+    <None Include="shaders\fragment.glsl" />
+    <None Include="shaders\vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\fairy_internal_ground_ao_texture.jpeg" />
+    <Image Include="textures\fb_abWishFairy_albedo.jpeg" />
+    <Image Include="textures\fb_abWishFairy_ao.jpeg" />
+    <Image Include="textures\fb_abWishFairy_nrm.jpeg" />
+    <Image Include="textures\fb_abWishFairy_rough.jpeg" />
+    <Image Include="textures\fb_abWishFairy_scattering.jpeg" />
+    <Image Include="textures\fb_abWishFairy_specular.jpeg" />
+    <Image Include="textures\fg_funkoFluttershy_albedo.jpeg" />
+    <Image Include="textures\fg_funkoFluttershy_ao.jpeg" />
+    <Image Include="textures\fg_funkoFluttershy_metal.jpeg" />
+    <Image Include="textures\fg_funkoFluttershy_nrm.jpeg" />
+    <Image Include="textures\fg_funkoFluttershy_scattering.jpeg" />
+    <Image Include="textures\Fox_BaseColor.png" />
+    <Image Include="textures\Fox_internal_ground_ao_texture.jpeg" />
+    <Image Include="textures\Fox_Metallic.png" />
+    <Image Include="textures\Fox_Normal.png" />
+    <Image Include="textures\Fox_Roughness.png" />
+    <Image Include="textures\internal_ground_ao_texture.jpeg" />
+    <Image Include="textures\SweeMainBody_SweeMainBody_BaseColor.png" />
+    <Image Include="textures\SweeMainBody_SweeMainBody_Height.png" />
+    <Image Include="textures\SweeMainBody_SweeMainBody_Metallic.png" />
+    <Image Include="textures\SweeMainBody_SweeMainBody_Normal.png" />
+    <Image Include="textures\SweeMainBody_SweeMainBody_Roughness.png" />
+    <Image Include="textures\tex_u1_v1_diffuse.jpeg" />
+    <Image Include="textures\tex_u1_v2_diffuse.jpeg" />
+    <Image Include="textures\tex_u2_v1_diffuse.jpeg" />
+    <Image Include="textures\tex_u2_v2_diffuse.jpeg" />
+    <Image Include="textures\tex_u3_v1_diffuse.jpeg" />
+    <Image Include="textures\tex_u3_v2_diffuse.jpeg" />
+  </ItemGroup>
+</Project>

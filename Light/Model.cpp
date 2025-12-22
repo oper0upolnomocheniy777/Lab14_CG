@@ -1,21 +1,37 @@
-#include "Model.h"
+п»ї#include "Model.h"
+#include "Shader.h"
+
+// Р”Р»СЏ filesystem РІ Visual Studio
+#ifdef _MSC_VER
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#else
+#include <filesystem>
+namespace fs = std::filesystem;
+#endif
+
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <filesystem>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
+// Р РµР°Р»РёР·Р°С†РёСЏ РєР»Р°СЃСЃР° Mesh
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
-
     setupMesh();
 }
 
@@ -45,9 +61,7 @@ void Mesh::setupMesh() {
 }
 
 void Mesh::Draw(Shader& shader) {
-    // Привязываем текстуры
-    unsigned int diffuseNr = 1;
-
+    // РџСЂРёРІСЏР·С‹РІР°РµРј С‚РµРєСЃС‚СѓСЂС‹
     for (unsigned int i = 0; i < textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
@@ -60,13 +74,13 @@ void Mesh::Draw(Shader& shader) {
         }
     }
 
-    // Если нет текстур, используем стандартный слот
+    // Р•СЃР»Рё РЅРµС‚ С‚РµРєСЃС‚СѓСЂ, РёСЃРїРѕР»СЊР·СѓРµРј СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ СЃР»РѕС‚
     if (textures.empty()) {
         glActiveTexture(GL_TEXTURE0);
         shader.setInt("material.texture_diffuse1", 0);
     }
 
-    // Отрисовка
+    // РћС‚СЂРёСЃРѕРІРєР°
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
@@ -74,12 +88,13 @@ void Mesh::Draw(Shader& shader) {
     glActiveTexture(GL_TEXTURE0);
 }
 
+// Р РµР°Р»РёР·Р°С†РёСЏ РєР»Р°СЃСЃР° Model
 Model::Model(const std::string& modelPath) {
     std::cout << "Loading model: " << modelPath << std::endl;
     loadOBJ(modelPath);
 
-    // Определяем имя модели для загрузки текстур
-    std::filesystem::path p(modelPath);
+    // РћРїСЂРµРґРµР»СЏРµРј РёРјСЏ РјРѕРґРµР»Рё РґР»СЏ Р·Р°РіСЂСѓР·РєРё С‚РµРєСЃС‚СѓСЂ
+    fs::path p(modelPath);
     std::string modelName = p.stem().string();
     loadTexturesForModel(modelName);
 }
@@ -89,8 +104,8 @@ void Model::loadOBJ(const std::string& path) {
     if (!file.is_open()) {
         std::cout << "ERROR: Cannot open model file: " << path << std::endl;
 
-        // Определяем имя модели для создания fallback
-        std::filesystem::path p(path);
+        // РћРїСЂРµРґРµР»СЏРµРј РёРјСЏ РјРѕРґРµР»Рё РґР»СЏ СЃРѕР·РґР°РЅРёСЏ fallback
+        fs::path p(path);
         std::string modelName = p.stem().string();
         createFallbackModel(modelName);
         return;
@@ -120,23 +135,9 @@ void Model::loadOBJ(const std::string& path) {
             iss >> normal.x >> normal.y >> normal.z;
             normals.push_back(normal);
         }
-        else if (type == "vt") { // Текстурная координата
+        else if (type == "vt") {
             glm::vec2 texCoord;
             iss >> texCoord.x >> texCoord.y;
-            // УБИРАЕМ ИНВЕРСИЮ Y или ПРОБУЕМ РАЗНЫЕ ВАРИАНТЫ:
-            // Вариант 1: Без инверсии (попробуйте сначала этот)
-            // texCoord.y = texCoord.y; // Ничего не меняем
-
-            // Вариант 2: Инверсия (если текстуры вверх ногами)
-            // texCoord.y = 1.0f - texCoord.y;
-
-            // Вариант 3: Пробуем оба варианта
-            static bool firstTime = true;
-            if (firstTime) {
-                std::cout << "First texture coordinate loaded: " << texCoord.x << ", " << texCoord.y << std::endl;
-                firstTime = false;
-            }
-
             texCoords.push_back(texCoord);
         }
         else if (type == "f") {
@@ -147,7 +148,7 @@ void Model::loadOBJ(const std::string& path) {
                 faceData.push_back(vertexData);
             }
 
-            // Обрабатываем треугольники
+            // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј С‚СЂРµСѓРіРѕР»СЊРЅРёРєРё
             for (size_t i = 1; i < faceData.size() - 1; i++) {
                 std::string v1 = faceData[0];
                 std::string v2 = faceData[i];
@@ -199,11 +200,10 @@ void Model::loadOBJ(const std::string& path) {
 void Model::loadTexturesForModel(const std::string& modelName) {
     std::vector<Texture> textures;
 
-    // Загружаем текстуры в зависимости от модели
-    if (modelName == "model") { // Руины дворца
+    // Р—Р°РіСЂСѓР¶Р°РµРј С‚РµРєСЃС‚СѓСЂС‹ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РјРѕРґРµР»Рё
+    if (modelName == "model") {
         std::cout << "Loading textures for ruins..." << std::endl;
 
-        // Пробуем загрузить одну из текстур руин
         std::string textureFiles[] = {
             "textures/tex_u1_v1_diffuse.jpeg",
             "textures/tex_u1_v2_diffuse.jpeg",
@@ -222,7 +222,7 @@ void Model::loadTexturesForModel(const std::string& modelName) {
                 tex.path = texFile;
                 textures.push_back(tex);
                 std::cout << "Loaded texture: " << texFile << std::endl;
-                break; // Загружаем только первую найденную
+                break;
             }
         }
 
@@ -236,15 +236,13 @@ void Model::loadTexturesForModel(const std::string& modelName) {
             textures.push_back(tex);
         }
     }
-    else if (modelName == "fb_abWishFairy") { // Фея
+    else if (modelName == "fb_abWishFairy") {
         std::cout << "Loading textures for fairy..." << std::endl;
 
-        // Пробуем загрузить альбедо текстуру феи
         std::string fairyTexture = "textures/fb_abWishFairy_albedo.jpeg";
         unsigned int texID = loadTexture(fairyTexture);
 
         if (texID == 0) {
-            // Пробуем другие текстуры феи
             std::string altTextures[] = {
                 "textures/fairy_internal_ground_ao_texture.jpeg",
                 "textures/fb_abWishFairy_specular.jpeg"
@@ -274,7 +272,7 @@ void Model::loadTexturesForModel(const std::string& modelName) {
             textures.push_back(tex);
         }
     }
-    else if (modelName == "dog day") { // Собака
+    else if (modelName == "dog day") {
         std::cout << "Creating brown color for dog..." << std::endl;
         unsigned int colorTex = createColorTexture(0.5f, 0.35f, 0.2f);
         Texture tex;
@@ -283,7 +281,7 @@ void Model::loadTexturesForModel(const std::string& modelName) {
         tex.path = "dog_color";
         textures.push_back(tex);
     }
-    else if (modelName == "fg_funkoFluttershy") { // Пони
+    else if (modelName == "fg_funkoFluttershy") {
         std::cout << "Loading textures for pony..." << std::endl;
 
         std::string ponyTexture = "textures/fg_funkoFluttershy_albedo.jpeg";
@@ -307,7 +305,7 @@ void Model::loadTexturesForModel(const std::string& modelName) {
             textures.push_back(tex);
         }
     }
-    else if (modelName == "SweeFinal") { // Sweet
+    else if (modelName == "SweeFinal") {
         std::cout << "Loading textures for Sweet..." << std::endl;
 
         std::string sweetTexture = "textures/SweeMainBody_SweeMainBody_BaseColor.png";
@@ -332,7 +330,7 @@ void Model::loadTexturesForModel(const std::string& modelName) {
         }
     }
 
-    // Добавляем текстуры к мешу
+    // Р”РѕР±Р°РІР»СЏРµРј С‚РµРєСЃС‚СѓСЂС‹ Рє РјРµС€Сѓ
     if (!meshes.empty() && !textures.empty()) {
         meshes[0].textures = textures;
         loadedTextures = textures;
@@ -342,10 +340,13 @@ void Model::loadTexturesForModel(const std::string& modelName) {
 unsigned int Model::loadTexture(const std::string& path) {
     std::cout << "Attempting to load texture: " << path << std::endl;
 
-    if (!std::filesystem::exists(path)) {
+    // РџСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ С„Р°Р№Р»Р°
+    std::ifstream testFile(path);
+    if (!testFile.good()) {
         std::cout << "Texture file not found: " << path << std::endl;
         return 0;
     }
+    testFile.close();
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -417,12 +418,11 @@ void Model::createFallbackModel(const std::string& modelName) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 
-    // Создаем простую пирамиду
     float size = 1.0f;
 
     Vertex v;
 
-    // Основание
+    // РћСЃРЅРѕРІР°РЅРёРµ РїРёСЂР°РјРёРґС‹
     v.Position = glm::vec3(-size, 0.0f, -size);
     v.Normal = glm::vec3(0.0f, -1.0f, 0.0f);
     v.TexCoords = glm::vec2(0.0f, 0.0f);
@@ -443,18 +443,17 @@ void Model::createFallbackModel(const std::string& modelName) {
     v.TexCoords = glm::vec2(0.0f, 1.0f);
     vertices.push_back(v);
 
-    // Вершина
+    // Р’РµСЂС€РёРЅР° РїРёСЂР°РјРёРґС‹
     v.Position = glm::vec3(0.0f, size * 2, 0.0f);
     v.Normal = glm::normalize(glm::vec3(0.0f, 1.0f, 0.5f));
     v.TexCoords = glm::vec2(0.5f, 0.5f);
     vertices.push_back(v);
 
-    // Индексы
-    // Основание
+    // РРЅРґРµРєСЃС‹ РґР»СЏ РѕСЃРЅРѕРІР°РЅРёСЏ
     indices.push_back(0); indices.push_back(1); indices.push_back(2);
     indices.push_back(2); indices.push_back(3); indices.push_back(0);
 
-    // Боковые грани
+    // РРЅРґРµРєСЃС‹ РґР»СЏ Р±РѕРєРѕРІС‹С… РіСЂР°РЅРµР№
     indices.push_back(0); indices.push_back(1); indices.push_back(4);
     indices.push_back(1); indices.push_back(2); indices.push_back(4);
     indices.push_back(2); indices.push_back(3); indices.push_back(4);
