@@ -1,0 +1,59 @@
+#
+# Wavefront material file
+# Created in RealityCapture
+# Engine version v1.4.0.117414
+#
+
+newmtl tex_u1_v1
+Ka 1 1 1
+Kd 1 1 1
+d 1
+Ns 0
+illum 1
+map_Kd tex_u1_v1_diffuse.jpg
+map_Bump tex_u1_v1_normal.jpg
+
+newmtl tex_u2_v1
+Ka 1 1 1
+Kd 1 1 1
+d 1
+Ns 0
+illum 1
+map_Kd tex_u2_v1_diffuse.jpg
+map_Bump tex_u2_v1_normal.jpg
+
+newmtl tex_u3_v1
+Ka 1 1 1
+Kd 1 1 1
+d 1
+Ns 0
+illum 1
+map_Kd tex_u3_v1_diffuse.jpg
+map_Bump tex_u3_v1_normal.jpg
+
+newmtl tex_u1_v2
+Ka 1 1 1
+Kd 1 1 1
+d 1
+Ns 0
+illum 1
+map_Kd tex_u1_v2_diffuse.jpg
+map_Bump tex_u1_v2_normal.jpg
+
+newmtl tex_u2_v2
+Ka 1 1 1
+Kd 1 1 1
+d 1
+Ns 0
+illum 1
+map_Kd tex_u2_v2_diffuse.jpg
+map_Bump tex_u2_v2_normal.jpg
+
+newmtl tex_u3_v2
+Ka 1 1 1
+Kd 1 1 1
+d 1
+Ns 0
+illum 1
+map_Kd tex_u3_v2_diffuse.jpg
+map_Bump tex_u3_v2_normal.jpg
